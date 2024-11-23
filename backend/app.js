@@ -12,7 +12,7 @@ const User = require('./models/user');
 const cors = require('cors');
 
 app.use(cors({
-    origin: 'https://auth-react-uml7.onrender.com',
+    origin: 'https://auth-react-frontend.onrender.com',
     credentials: true
 }));
 
