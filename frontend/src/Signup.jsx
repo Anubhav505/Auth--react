@@ -18,7 +18,11 @@ function Signup() {
   const sendData = async (e) => {
   e.preventDefault();
   try {
-    await axios.post("http://localhost:8000/signup", formData, { withCredentials: true });
+    await axios.post(
+      "https://auth-react-backend.onrender.com/signup",
+      formData,
+      { withCredentials: true }
+    );
     navigate("/login");
   } catch (error) { 
     console.error(error);

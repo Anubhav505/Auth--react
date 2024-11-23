@@ -17,7 +17,11 @@ const handleChange = (e) => {
 const sendLoginData = async (e) => {
   e.preventDefault()
   try{
-    await axios.post('http://localhost:8000/login',loginData,{withCredentials:true})
+    await axios.post(
+      "https://auth-react-backend.onrender.com/login",
+      loginData,
+      { withCredentials: true }
+    );
     navigate('/dashboard')
   }catch(error){
     console.error(error)

@@ -7,7 +7,9 @@ function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/user", { withCredentials: true })
+      .get("https://auth-react-backend.onrender.com/user", {
+        withCredentials: true,
+      })
       .then((response) => {
         setUser(response.data);
       })
@@ -19,7 +21,9 @@ function Home() {
 
   const handleLogout = async () => {
     try{
-      await axios.get('http://localhost:8000/logout', {withCredentials: true})
+      await axios.get("https://auth-react-backend.onrender.com/logout", {
+        withCredentials: true,
+      });
       setUser(null)
     }catch(error){
       console.error(error)
