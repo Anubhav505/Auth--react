@@ -29,6 +29,18 @@ store.on("error", () => {
     console.log("ERROR in MONGO SESSION STORE", err);
 });
 
+// app.use(session({
+//     store,
+//     secret: process.env.SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//         httpOnly: true,
+//     },
+// }))
+
 app.use(session({
     store,
     secret: process.env.SECRET,
@@ -38,8 +50,11 @@ app.use(session({
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+        sameSite: 'lax', // Helps prevent CSRF
     },
-}))
+}));
+
 
 app.use(express.json());
 
@@ -66,12 +81,27 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
     res.status(201).json({ message: "User Logged in" })
 });
 
+// app.get('/user', (req, res) => {
+//     if (req.isAuthenticated()) {
+//         return res.json(req.user)
+//     }
+//     res.status(401).json({ message: "User not authenticated" })
+// })
+
 app.get('/user', (req, res) => {
     if (req.isAuthenticated()) {
-        return res.json(req.user)
+        return res.json({
+            authenticated: true,
+            user: {
+                id: req.user._id,
+                username: req.user.username,
+                email: req.user.email,
+            },
+        });
     }
-    res.status(401).json({ message: "User not authenticated" })
-})
+    res.json({ authenticated: false });
+});
+
 
 app.get('/logout', (req, res) => {
     req.logout((err) => {

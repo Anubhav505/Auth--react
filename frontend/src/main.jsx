@@ -16,16 +16,13 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get(`${backendUrl}/user`, {
-        withCredentials: true,
-      })
+      .get(`${backendUrl}/user`, { withCredentials: true })
       .then((response) => {
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        }
+        setIsAuthenticated(response.data.authenticated);
       })
       .catch(() => setIsAuthenticated(false));
-}, []);
+  }, []);
+
 
   if (isAuthenticated === null) {
     return null;
