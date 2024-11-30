@@ -9,12 +9,13 @@ import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Home from "./Home.jsx";
 import Dashboard from "./Dashboard.jsx";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/user", { withCredentials: true })
+    axios.get(`${backendUrl}/user`, { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           setIsAuthenticated(true);

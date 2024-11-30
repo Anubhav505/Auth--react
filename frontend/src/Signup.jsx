@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Signup() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Signup() {
   const sendData = async (e) => {
   e.preventDefault();
   try {
-    await axios.post("http://localhost:8000/signup", formData, { withCredentials: true });
+    await axios.post(`${backendUrl}/signup`, formData, { withCredentials: true });
     navigate("/login");
   } catch (error) { 
     console.error(error);

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
+const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 function Home() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/user", { withCredentials: true })
+      .get(`${backendUrl}/user`, { withCredentials: true })
       .then((response) => {
         setUser(response.data);
       })
@@ -19,7 +20,7 @@ function Home() {
 
   const handleLogout = async () => {
     try{
-      await axios.get('http://localhost:8000/logout', {withCredentials: true})
+      await axios.get(`${backendUrl}/logout`, {withCredentials: true})
       setUser(null)
     }catch(error){
       console.error(error)

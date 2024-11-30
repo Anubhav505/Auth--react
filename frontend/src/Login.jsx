@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Login() {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ const handleChange = (e) => {
 const sendLoginData = async (e) => {
   e.preventDefault()
   try{
-    await axios.post('http://localhost:8000/login',loginData,{withCredentials:true})
+    await axios.post(`${backendUrl}/login`,loginData,{withCredentials:true})
     navigate('/dashboard')
   }catch(error){
     console.error(error)
