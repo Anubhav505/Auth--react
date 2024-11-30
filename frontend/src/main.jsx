@@ -9,14 +9,14 @@ import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Home from "./Home.jsx";
 import Dashboard from "./Dashboard.jsx";
-// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
     axios
-      .get('https://auth-react-3es2.onrender.com/user', {
+      .get(`${backendUrl}/user`, {
         withCredentials: true,
       })
       .then((response) => {
