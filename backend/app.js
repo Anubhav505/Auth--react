@@ -75,7 +75,13 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post('/login', passport.authenticate('local'), (req, res) => {
-    res.status(201).json({ message: "User Logged in" });
+    if (req.isAuthenticated()) {
+        console.log("User authenticated:", req.user);  // Log authenticated user data
+        res.status(201).json({ message: "User Logged in", user: req.user });
+    } else {
+        console.error("Login failed:", req.user);  // Log if login failed
+        res.status(401).json({ message: "Authentication failed" });
+    }
 });
 
 app.get('/user', (req, res) => {
@@ -87,7 +93,10 @@ app.get('/user', (req, res) => {
 
 app.post('/logout', (req, res) => {
     req.logout((err) => {
-        if (err) { return res.status(500).json({ message: "Logout failed" }) }
+        if (err) {
+            console.error("Logout failed:", err);
+            return res.status(500).json({ message: "Logout failed" });
+        }
         res.status(200).json({ message: "Logout Successful" });
     });
 });
