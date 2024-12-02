@@ -74,14 +74,30 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-app.post('/login', passport.authenticate('local'), (req, res) => {
-    if (req.isAuthenticated()) {
-        console.log("User authenticated:", req.user);  // Log authenticated user data
-        res.status(201).json({ message: "User Logged in", user: req.user });
-    } else {
-        console.error("Login failed:", req.user);  // Log if login failed
-        res.status(401).json({ message: "Authentication failed" });
-    }
+app.post('/login', (req, res, next) => {
+    console.log("Login attempt:", req.body);  // Log login attempt data
+
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            console.error("Error during authentication:", err);
+            return res.status(500).json({ message: "Login failed due to server error" });
+        }
+
+        if (!user) {
+            console.log("Authentication failed. User not found or incorrect credentials.");
+            return res.status(401).json({ message: "Login failed. Please try again." });
+        }
+
+        req.logIn(user, (err) => {
+            if (err) {
+                console.error("Error during session login:", err);
+                return res.status(500).json({ message: "Login failed during session setup" });
+            }
+
+            console.log("User authenticated:", user);
+            return res.status(200).json({ message: "User logged in successfully", user });
+        });
+    })(req, res, next);
 });
 
 app.get('/user', (req, res) => {
