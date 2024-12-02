@@ -24,11 +24,16 @@ function Navbar() {
     checkLoginStatus();
   }, [location.pathname]);
 
-  const Logout = async () => {
+const Logout = async () => {
+  try {
     await axios.post(`${backendUrl}/logout`, {}, { withCredentials: true });
-    navigate('/');
     setIsLoggedIn(false);
-  };
+    navigate("/");
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
+
 
   return (
     <div className="flex justify-between items-center py-3 px-16 bg-purple-500 text-white">

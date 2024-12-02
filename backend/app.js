@@ -52,6 +52,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));
 
 app.post("/signup", async (req, res) => {
     try {
@@ -64,9 +66,17 @@ app.post("/signup", async (req, res) => {
     }
 })
 
-app.post('/login', passport.authenticate('local'), (req, res) => {
-    res.status(201).json({ message: "User Logged in" })
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) return next(err);
+        if (!user) return res.status(401).json({ message: "Invalid credentials" });
+        req.login(user, (err) => {
+            if (err) return next(err);
+            return res.status(200).json({ message: "User Logged in" });
+        });
+    })(req, res, next);
 });
+
 
 app.get('/user', (req, res) => {
     if (req.isAuthenticated()) {
