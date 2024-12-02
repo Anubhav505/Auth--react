@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { Navigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -9,7 +8,9 @@ const Dashboard = () => {
   useEffect(() => {
     // Check if user is logged in
     axios
-      .get(`${backendUrl}/user`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+        withCredentials: true,
+      })
       .then((response) => {
         setIsAuthenticated(true);
       })
@@ -23,7 +24,7 @@ const Dashboard = () => {
   }
 
   if (isAuthenticated === false) {
-    return <Redirect to="/login" />;
+    return <Navigate to="/login" />;
   }
 
   return (
