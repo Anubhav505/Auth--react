@@ -25,8 +25,8 @@ const store = MongoStore.create({
     },
     touchAfter: 24 * 3600,
 });
-store.on("error", () => {
-    console.log("ERROR in MONGO SESSION STORE", err);
+store.on("error", (err) => {
+    console.error("ERROR in MONGO SESSION STORE", err);
 });
 
 app.use(session({
@@ -38,8 +38,10 @@ app.use(session({
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        sameSite: 'none', // Required for cross-origin cookies
+        secure: process.env.NODE_ENV === 'production', // HTTPS in production
     },
-}))
+}));
 
 app.use(express.json());
 
