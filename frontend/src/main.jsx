@@ -9,6 +9,7 @@ import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Home from "./Home.jsx";
 import Dashboard from "./Dashboard.jsx";
+import Navbar from "./Navbar.jsx";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const ProtectedRoute = ({ children }) => {
@@ -18,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
     axios
       .get(`${backendUrl}/user`, { withCredentials: true })
       .then((response) => {
-        setIsAuthenticated(response.data.authenticated);
+        setIsAuthenticated(response.data);
       })
       .catch(() => setIsAuthenticated(false));
   }, []);
@@ -34,6 +35,7 @@ const ProtectedRoute = ({ children }) => {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
