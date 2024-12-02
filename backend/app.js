@@ -38,58 +38,39 @@ app.use(session({
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'none', // Required for cross-origin cookies
-        secure: process.env.NODE_ENV === 'production', // HTTPS in production
+        sameSite: 'lax',
+        secure: false,
     },
 }));
 
-app.use(express.json());
-
-app.use(passport.initialize());
-app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.error("MongoDB connection error:", err));
+app.use(express.json())
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.post("/signup", async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-        await User.register(new User({ username, email }), password);
-        res.status(201).json({ message: "User registered successfully" });
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-})
-
-app.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) return next(err);
-        if (!user) return res.status(401).json({ message: "Invalid credentials" });
-        req.login(user, (err) => {
-            if (err) return next(err);
-            return res.status(200).json({ message: "User Logged in" });
-        });
-    })(req, res, next);
+// Login Route
+app.post("/login", passport.authenticate("local", { failureRedirect: "/login" }), (req, res) => {
+    res.send({ message: "Logged in successfully" });
 });
 
-
+// User Route
 app.get('/user', (req, res) => {
     if (req.isAuthenticated()) {
-        return res.json(req.user)
+        res.send({ user: req.user });
+    } else {
+        res.status(401).send({ message: 'Not authenticated' });
     }
-    res.status(401).json({ message: "User not authenticated" })
-})
-
-app.post('/logout', (req, res) => {
-    req.logout((err) => {
-        if (err) { return res.status(500).json({ message: "Logout failed" }) }
-        res.status(200).json({ message: "Logout Successful" })
-    });
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+// Logout Route
+app.post("/logout", (req, res) => {
+    req.logout();
+    res.send({ message: "Logged out" });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

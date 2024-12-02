@@ -11,7 +11,9 @@ function Navbar() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/user`, { withCredentials: true });
+        const response = await axios.get(`${backendUrl}/user`, {
+          withCredentials: true,
+        });
         if (response.data) {
           setIsLoggedIn(true);
         }
@@ -24,16 +26,11 @@ function Navbar() {
     checkLoginStatus();
   }, [location.pathname]);
 
-const Logout = async () => {
-  try {
+  const Logout = async () => {
     await axios.post(`${backendUrl}/logout`, {}, { withCredentials: true });
-    setIsLoggedIn(false);
     navigate("/");
-  } catch (error) {
-    console.error("Logout error:", error);
-  }
-};
-
+    setIsLoggedIn(false);
+  };
 
   return (
     <div className="flex justify-between items-center py-3 px-16 bg-purple-500 text-white">

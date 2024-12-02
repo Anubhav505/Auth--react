@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 function Login() {
@@ -11,7 +10,6 @@ function Login() {
     username: "",
     password: "",
   });
-  const [error, setError] = useState(""); // For displaying errors
 
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -26,15 +24,12 @@ function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      setError("Login failed. Please check your credentials.");
     }
   };
 
   return (
     <div className="h-screen w-full bg-sky-500 flex flex-col justify-center items-center space-y-4">
       <h2 className="text-2xl font-bold text-white">Login</h2>
-      {error && <p className="text-red-500">{error}</p>}{" "}
-      {/* Display error message */}
       <form onSubmit={sendLoginData} className="flex flex-col space-y-4">
         <input
           name="username"

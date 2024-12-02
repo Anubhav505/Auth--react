@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
     axios
       .get(`${backendUrl}/user`, { withCredentials: true })
       .then((response) => {
-        setIsAuthenticated(response.data);
+        setIsAuthenticated(true); // Assume success means authenticated
       })
       .catch(() => setIsAuthenticated(false));
   }, []);
